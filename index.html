@@ -768,7 +768,10 @@ function hideCfg() { document.getElementById('overlay').style.display = 'none'; 
 // THEMES
 // ============================================================
 function setTheme(t) {
-  document.body.className = 'theme-' + t;
+  var extra = '';
+  if (document.body.className.indexOf('is-standalone') !== -1) extra += ' is-standalone';
+  if (document.body.className.indexOf('is-fullscreen') !== -1) extra += ' is-fullscreen';
+  document.body.className = 'theme-' + t + extra;
   CFG.theme = t;
   try { localStorage.setItem('wx3000', JSON.stringify(CFG)); } catch(e) {}
   var ts = ['green','blue','bw','amber','aurore'];
