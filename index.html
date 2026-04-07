@@ -1,0 +1,929 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<title>WEATHER STATION</title>
+<link href="https://fonts.googleapis.com/css2?family=DSEG7+Classic:wght@400;700&family=DSEG14+Classic:wght@400&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; -webkit-box-sizing: border-box; box-sizing: border-box; }
+
+body {
+  font-family: 'Share Tech Mono', 'Courier New', monospace;
+  min-height: 100vh;
+  -webkit-text-size-adjust: 100%;
+}
+
+/* ===== THEMES ===== */
+body.theme-green { background: #141f14; color: #3dff3d; }
+body.theme-blue  { background: #0c1420; color: #33ccff; }
+body.theme-bw    { background: #181818; color: #e8e8e8; }
+body.theme-amber { background: #1a1200; color: #ffcc00; }
+
+/* Screen */
+body.theme-green .lcd { background: #0a140a; border: 2px solid #1e3a1e; -webkit-box-shadow: inset 0 0 30px #000, 0 0 16px #0a1a0a; box-shadow: inset 0 0 30px #000, 0 0 16px #0a1a0a; }
+body.theme-blue  .lcd { background: #060d18; border: 2px solid #142a46; -webkit-box-shadow: inset 0 0 30px #000, 0 0 16px #06101e; box-shadow: inset 0 0 30px #000, 0 0 16px #06101e; }
+body.theme-bw    .lcd { background: #0e0e0e; border: 2px solid #2a2a2a; -webkit-box-shadow: inset 0 0 30px #000; box-shadow: inset 0 0 30px #000; }
+body.theme-amber .lcd { background: #0e0900; border: 2px solid #3a2800; -webkit-box-shadow: inset 0 0 30px #000, 0 0 16px #1a0f00; box-shadow: inset 0 0 30px #000, 0 0 16px #1a0f00; }
+
+/* Body shell */
+body.theme-green .shell { background: #1e2e1e; border: 3px solid #2a4a2a; }
+body.theme-blue  .shell { background: #141e2e; border: 3px solid #1e3a5a; }
+body.theme-bw    .shell { background: #1e1e1e; border: 3px solid #3a3a3a; }
+body.theme-amber .shell { background: #1e1500; border: 3px solid #3a2800; }
+
+/* Accent colors */
+body.theme-green .accent  { color: #22cc22; }
+body.theme-blue  .accent  { color: #2299bb; }
+body.theme-bw    .accent  { color: #999; }
+body.theme-amber .accent  { color: #cc9900; }
+
+body.theme-green .dim     { color: #156615; }
+body.theme-blue  .dim     { color: #0f5570; }
+body.theme-bw    .dim     { color: #555; }
+body.theme-amber .dim     { color: #664d00; }
+
+body.theme-green .bright  { color: #55ff55; font-family: 'DSEG7 Classic', monospace; }
+body.theme-blue  .bright  { color: #55ddff; font-family: 'DSEG7 Classic', monospace; }
+body.theme-bw    .bright  { color: #ffffff; font-family: 'DSEG7 Classic', monospace; }
+body.theme-amber .bright  { color: #ffdd33; font-family: 'DSEG7 Classic', monospace; }
+
+body.theme-green .bright14 { color: #55ff55; font-family: 'DSEG14 Classic', monospace; }
+body.theme-blue  .bright14 { color: #55ddff; font-family: 'DSEG14 Classic', monospace; }
+body.theme-bw    .bright14 { color: #ffffff; font-family: 'DSEG14 Classic', monospace; }
+body.theme-amber .bright14 { color: #ffdd33; font-family: 'DSEG14 Classic', monospace; }
+
+body.theme-green .sep { border-color: #1a3a1a; }
+body.theme-blue  .sep { border-color: #102040; }
+body.theme-bw    .sep { border-color: #252525; }
+body.theme-amber .sep { border-color: #3a2000; }
+
+body.theme-green .cell  { border: 1px solid #1a3a1a; background: #0d180d; }
+body.theme-blue  .cell  { border: 1px solid #102040; background: #08101e; }
+body.theme-bw    .cell  { border: 1px solid #252525; background: #111; }
+body.theme-amber .cell  { border: 1px solid #3a2000; background: #100a00; }
+
+body.theme-green .bar-fill { background: #22aa22; }
+body.theme-blue  .bar-fill { background: #2288aa; }
+body.theme-bw    .bar-fill { background: #888; }
+body.theme-amber .bar-fill { background: #aa8800; }
+
+body.theme-green .btn { border: 1px solid #1e3a1e; color: #22aa22; background: #0a140a; }
+body.theme-blue  .btn { border: 1px solid #142040; color: #2288aa; background: #06101e; }
+body.theme-bw    .btn { border: 1px solid #2a2a2a; color: #888; background: #111; }
+body.theme-amber .btn { border: 1px solid #2a1c00; color: #aa8800; background: #0e0900; }
+
+body.theme-green .btn:hover, body.theme-green .btn.active { background: #142814; color: #44ff44; }
+body.theme-blue  .btn:hover, body.theme-blue  .btn.active { background: #0a1e36; color: #44ddff; }
+body.theme-bw    .btn:hover, body.theme-bw    .btn.active { background: #222; color: #eee; }
+body.theme-amber .btn:hover, body.theme-amber .btn.active { background: #1e1200; color: #ffcc00; }
+
+/* Forecast bars */
+body.theme-green .fc-hi { color: #44ff44; }
+body.theme-green .fc-lo { color: #1a7a1a; }
+body.theme-blue  .fc-hi { color: #44ddff; }
+body.theme-blue  .fc-lo { color: #1a6a88; }
+body.theme-bw    .fc-hi { color: #ffffff; }
+body.theme-bw    .fc-lo { color: #777; }
+body.theme-amber .fc-hi { color: #ffdd33; }
+body.theme-amber .fc-lo { color: #886600; }
+
+/* ===== LAYOUT ===== */
+.outer { max-width: 800px; margin: 0 auto; padding: 12px; }
+
+.shell {
+  border-radius: 12px;
+  padding: 6px;
+}
+
+.brand-strip {
+  display: -webkit-box; display: -webkit-flex; display: flex;
+  -webkit-box-pack: justify; -webkit-justify-content: space-between; justify-content: space-between;
+  -webkit-box-align: center; -webkit-align-items: center; align-items: center;
+  padding: 6px 12px 5px;
+  font-size: 9px;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  opacity: 0.4;
+}
+
+.lcd {
+  border-radius: 6px;
+  padding: 14px;
+}
+
+/* ===== GRID SYSTEM ===== */
+.row {
+  display: -webkit-box; display: -webkit-flex; display: flex;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+.row-3 { -webkit-box-align: stretch; -webkit-align-items: stretch; align-items: stretch; }
+
+.col-1 { -webkit-box-flex: 1; -webkit-flex: 1; flex: 1; min-width: 0; }
+.col-2 { -webkit-box-flex: 2; -webkit-flex: 2; flex: 2; min-width: 0; }
+.col-3 { -webkit-box-flex: 3; -webkit-flex: 3; flex: 3; min-width: 0; }
+
+.cell {
+  border-radius: 4px;
+  padding: 10px 12px;
+  position: relative;
+}
+
+/* ===== CELL LABELS ===== */
+.cell-label {
+  font-size: 8px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+
+/* ===== BIG TEMP ===== */
+.big-temp {
+  font-size: 64px;
+  line-height: 1;
+  letter-spacing: 2px;
+  display: block;
+}
+
+.temp-unit {
+  font-size: 22px;
+  vertical-align: top;
+  margin-top: 8px;
+  display: inline-block;
+}
+
+.feels-like {
+  font-size: 11px;
+  letter-spacing: 1px;
+  margin-top: 4px;
+}
+
+/* ===== CLOCK ===== */
+.clock-time {
+  font-size: 32px;
+  letter-spacing: 2px;
+  line-height: 1.1;
+}
+.clock-date {
+  font-size: 10px;
+  letter-spacing: 2px;
+  margin-top: 3px;
+  text-transform: uppercase;
+}
+
+/* ===== WX SYMBOL ===== */
+.wx-symbol {
+  font-size: 11px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-top: 5px;
+}
+.wx-icon-ascii {
+  font-size: 28px;
+  line-height: 1;
+  margin-bottom: 4px;
+  font-family: 'Share Tech Mono', monospace;
+}
+
+/* ===== METRICS ===== */
+.metric-val {
+  font-size: 26px;
+  letter-spacing: 1px;
+  line-height: 1;
+}
+.metric-unit {
+  font-size: 11px;
+  margin-left: 3px;
+  vertical-align: bottom;
+}
+
+/* ===== HUMIDITY BAR ===== */
+.bar-track {
+  height: 6px;
+  border-radius: 3px;
+  overflow: hidden;
+  margin-top: 6px;
+}
+body.theme-green .bar-track { background: #0a1a0a; border: 1px solid #1a3a1a; }
+body.theme-blue  .bar-track { background: #060e18; border: 1px solid #102040; }
+body.theme-bw    .bar-track { background: #0e0e0e; border: 1px solid #252525; }
+body.theme-amber .bar-track { background: #0a0700; border: 1px solid #2a1a00; }
+
+.bar-fill {
+  height: 100%;
+  border-radius: 3px;
+  -webkit-transition: width 0.6s ease; transition: width 0.6s ease;
+}
+
+/* ===== UV INDEX colored badge ===== */
+.uv-badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 3px;
+  font-size: 18px;
+  letter-spacing: 1px;
+  margin-top: 2px;
+}
+
+/* ===== WIND DIRECTION ===== */
+.wind-compass {
+  width: 48px; height: 48px;
+  border-radius: 50%;
+  position: relative;
+  display: inline-block;
+  margin-top: 4px;
+}
+body.theme-green .wind-compass { border: 1px solid #1a3a1a; background: #0a140a; }
+body.theme-blue  .wind-compass { border: 1px solid #102040; background: #060e18; }
+body.theme-bw    .wind-compass { border: 1px solid #252525; background: #0e0e0e; }
+body.theme-amber .wind-compass { border: 1px solid #3a2000; background: #0e0700; }
+
+.compass-n, .compass-s, .compass-e, .compass-w {
+  position: absolute;
+  font-size: 7px;
+  letter-spacing: 0;
+}
+.compass-n { top: 2px; left: 50%; margin-left: -3px; }
+.compass-s { bottom: 2px; left: 50%; margin-left: -3px; }
+.compass-e { right: 3px; top: 50%; margin-top: -5px; }
+.compass-w { left: 3px; top: 50%; margin-top: -5px; }
+
+.compass-needle {
+  position: absolute;
+  width: 2px;
+  height: 18px;
+  top: 50%; left: 50%;
+  margin-left: -1px;
+  margin-top: -16px;
+  -webkit-transform-origin: bottom center;
+  transform-origin: bottom center;
+  border-radius: 1px;
+}
+body.theme-green .compass-needle { background: #44ff44; }
+body.theme-blue  .compass-needle { background: #44ddff; }
+body.theme-bw    .compass-needle { background: #fff; }
+body.theme-amber .compass-needle { background: #ffdd33; }
+
+/* ===== 7-DAY FORECAST ===== */
+.forecast-row {
+  display: -webkit-box; display: -webkit-flex; display: flex;
+  gap: 6px;
+}
+.fc-day {
+  -webkit-box-flex: 1; -webkit-flex: 1; flex: 1;
+  text-align: center;
+  padding: 6px 4px;
+  border-radius: 3px;
+  min-width: 0;
+}
+body.theme-green .fc-day { border: 1px solid #1a3a1a; background: #0d180d; }
+body.theme-blue  .fc-day { border: 1px solid #102040; background: #08101e; }
+body.theme-bw    .fc-day { border: 1px solid #252525; background: #111; }
+body.theme-amber .fc-day { border: 1px solid #3a2000; background: #100a00; }
+
+.fc-name { font-size: 8px; letter-spacing: 2px; margin-bottom: 3px; }
+.fc-icon { font-size: 10px; letter-spacing: 1px; margin-bottom: 3px; }
+.fc-hi   { font-size: 13px; font-family: 'DSEG7 Classic', monospace; }
+.fc-lo   { font-size: 10px; font-family: 'DSEG7 Classic', monospace; margin-top: 1px; }
+.fc-rain { font-size: 8px; letter-spacing: 1px; margin-top: 3px; }
+
+/* ===== DIVIDER ===== */
+.sep { border: none; border-top: 1px solid; margin: 10px 0; }
+
+/* ===== BOTTOM BAR ===== */
+.bottom-bar {
+  display: -webkit-box; display: -webkit-flex; display: flex;
+  -webkit-box-pack: justify; -webkit-justify-content: space-between; justify-content: space-between;
+  -webkit-box-align: center; -webkit-align-items: center; align-items: center;
+  padding: 7px 10px 6px;
+  flex-wrap: wrap; gap: 8px;
+}
+.theme-btns { display: -webkit-box; display: -webkit-flex; display: flex; gap: 5px; }
+.btn {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 9px; letter-spacing: 2px;
+  padding: 4px 8px; border-radius: 3px;
+  cursor: pointer; text-transform: uppercase;
+  -webkit-tap-highlight-color: transparent;
+}
+.blink-dot {
+  width: 5px; height: 5px; border-radius: 50%;
+  display: inline-block; margin-right: 5px;
+  -webkit-animation: blink 2s infinite; animation: blink 2s infinite;
+}
+body.theme-green .blink-dot { background: #44ff44; }
+body.theme-blue  .blink-dot { background: #44ddff; }
+body.theme-bw    .blink-dot { background: #e8e8e8; }
+body.theme-amber .blink-dot { background: #ffcc00; }
+
+@-webkit-keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.15} }
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.15} }
+
+.status-row { font-size: 9px; letter-spacing: 2px; opacity: 0.4; display:-webkit-box;display:-webkit-flex;display:flex;-webkit-box-align:center;-webkit-align-items:center;align-items:center; }
+
+/* ===== CFG OVERLAY ===== */
+.overlay {
+  display: none; position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.88);
+  z-index: 200; overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+.cfg-box {
+  max-width: 420px; margin: 36px auto; padding: 20px;
+  border-radius: 8px; font-size: 12px;
+}
+body.theme-green .cfg-box { background: #0a140a; border: 2px solid #1e4a1e; color: #3dff3d; }
+body.theme-blue  .cfg-box { background: #060d18; border: 2px solid #144070; color: #33ccff; }
+body.theme-bw    .cfg-box { background: #111; border: 2px solid #333; color: #e8e8e8; }
+body.theme-amber .cfg-box { background: #0e0900; border: 2px solid #3a2000; color: #ffcc00; }
+
+.cfg-box h2 { font-size: 9px; letter-spacing: 4px; margin-bottom: 14px; opacity: 0.5; }
+.cfg-box label { display: block; font-size: 9px; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 3px; opacity: 0.45; }
+.cfg-box input, .cfg-box select {
+  width: 100%; background: transparent; border-radius: 3px;
+  padding: 6px 9px; font-family: 'Share Tech Mono', monospace; font-size: 12px;
+  margin-bottom: 11px;
+}
+body.theme-green .cfg-box input, body.theme-green .cfg-box select { border: 1px solid #1e4a1e; color: #3dff3d; }
+body.theme-blue  .cfg-box input, body.theme-blue  .cfg-box select { border: 1px solid #144070; color: #33ccff; }
+body.theme-bw    .cfg-box input, body.theme-bw    .cfg-box select { border: 1px solid #333; color: #e8e8e8; }
+body.theme-amber .cfg-box input, body.theme-amber .cfg-box select { border: 1px solid #3a2000; color: #ffcc00; }
+.cfg-hint { font-size: 9px; letter-spacing: 1px; opacity: 0.35; margin-bottom: 11px; line-height: 1.6; }
+.cfg-row { display:-webkit-box;display:-webkit-flex;display:flex; gap:8px; margin-top:14px; }
+.cfg-btn {
+  -webkit-box-flex:1;-webkit-flex:1;flex:1;
+  padding: 8px; font-family: 'Share Tech Mono', monospace; font-size: 10px;
+  letter-spacing: 2px; border-radius: 3px; cursor: pointer; text-transform: uppercase;
+}
+body.theme-green .cfg-btn { border:1px solid #1e4a1e; color:#3dff3d; background:#0a140a; }
+body.theme-blue  .cfg-btn { border:1px solid #144070; color:#33ccff; background:#060d18; }
+body.theme-bw    .cfg-btn { border:1px solid #333; color:#e8e8e8; background:#111; }
+body.theme-amber .cfg-btn { border:1px solid #3a2000; color:#ffcc00; background:#0e0900; }
+body.theme-green .cfg-btn.save { background:#162a16; }
+body.theme-blue  .cfg-btn.save { background:#0a1e36; }
+body.theme-bw    .cfg-btn.save { background:#1e1e1e; }
+body.theme-amber .cfg-btn.save { background:#1a1000; }
+
+/* ===== LOADING ===== */
+.ld { font-size: 10px; letter-spacing: 3px; opacity: 0.35;
+  -webkit-animation: ldp 1.4s ease-in-out infinite; animation: ldp 1.4s ease-in-out infinite; }
+@-webkit-keyframes ldp{0%,100%{opacity:.15}50%{opacity:.6}}
+@keyframes ldp{0%,100%{opacity:.15}50%{opacity:.6}}
+
+@media (max-width: 520px) {
+  .big-temp { font-size: 44px; }
+  .clock-time { font-size: 24px; }
+  .metric-val { font-size: 20px; }
+  .fc-hi { font-size: 11px; }
+  .fc-lo { font-size: 9px; }
+}
+</style>
+</head>
+<body class="theme-green">
+
+<div class="outer">
+<div class="shell">
+
+  <div class="brand-strip">
+    <span>WX-3000</span>
+    <span>PERSONAL WEATHER STATION</span>
+    <span>PRO</span>
+  </div>
+
+  <div class="lcd">
+
+    <!-- ROW 1: Temp + Clock + Conditions -->
+    <div class="row">
+
+      <!-- BIG TEMP -->
+      <div class="cell col-2" id="cell-temp">
+        <div class="cell-label dim">TEMPERATURE</div>
+        <div class="ld">LOADING...</div>
+      </div>
+
+      <!-- CLOCK -->
+      <div class="cell col-1">
+        <div class="cell-label dim">TIME</div>
+        <div class="clock-time bright" id="clock-t">--:--:--</div>
+        <div class="clock-date accent" id="clock-d">---</div>
+      </div>
+
+      <!-- CONDITIONS -->
+      <div class="cell col-1" id="cell-cond">
+        <div class="cell-label dim">CONDITIONS</div>
+        <div class="ld">--</div>
+      </div>
+
+    </div>
+
+    <!-- ROW 2: Humidity + Pressure + Wind + UV -->
+    <div class="row">
+
+      <!-- HUMIDITY -->
+      <div class="cell col-1" id="cell-hum">
+        <div class="cell-label dim">HUMIDITY</div>
+        <div class="ld">--</div>
+      </div>
+
+      <!-- PRESSURE -->
+      <div class="cell col-1" id="cell-pres">
+        <div class="cell-label dim">PRESSURE</div>
+        <div class="ld">--</div>
+      </div>
+
+      <!-- WIND -->
+      <div class="cell col-1" id="cell-wind">
+        <div class="cell-label dim">WIND</div>
+        <div class="ld">--</div>
+      </div>
+
+      <!-- UV -->
+      <div class="cell col-1" id="cell-uv">
+        <div class="cell-label dim">UV INDEX</div>
+        <div class="ld">--</div>
+      </div>
+
+    </div>
+
+    <!-- ROW 3: Rain + Sunrise/set + Visibility + Cloudcover -->
+    <div class="row">
+
+      <div class="cell col-1" id="cell-rain">
+        <div class="cell-label dim">PRECIP</div>
+        <div class="ld">--</div>
+      </div>
+
+      <div class="cell col-1" id="cell-sun">
+        <div class="cell-label dim">SUN</div>
+        <div class="ld">--</div>
+      </div>
+
+      <div class="cell col-1" id="cell-cloud">
+        <div class="cell-label dim">CLOUD COVER</div>
+        <div class="ld">--</div>
+      </div>
+
+      <div class="cell col-1" id="cell-loc">
+        <div class="cell-label dim">LOCATION</div>
+        <div class="ld">--</div>
+      </div>
+
+    </div>
+
+    <hr class="sep">
+
+    <!-- 7-DAY FORECAST -->
+    <div class="cell-label dim" style="margin-bottom:8px;">7-DAY FORECAST</div>
+    <div class="forecast-row" id="forecast-row">
+      <div class="ld">LOADING FORECAST...</div>
+    </div>
+
+  </div><!-- /lcd -->
+
+  <!-- BOTTOM BAR -->
+  <div class="bottom-bar">
+    <div class="theme-btns">
+      <button class="btn active" id="btn-green" onclick="setTheme('green')">GRN</button>
+      <button class="btn" id="btn-blue"  onclick="setTheme('blue')">BLU</button>
+      <button class="btn" id="btn-bw"    onclick="setTheme('bw')">B&amp;W</button>
+      <button class="btn" id="btn-amber" onclick="setTheme('amber')">AMB</button>
+      <button class="btn" onclick="showCfg()">CFG</button>
+      <button class="btn" onclick="loadWeather()" style="opacity:0.5;">REFRESH</button>
+    </div>
+    <div class="status-row">
+      <span class="blink-dot"></span>
+      <span id="status-txt">ONLINE</span>
+    </div>
+  </div>
+
+</div><!-- /shell -->
+</div><!-- /outer -->
+
+<!-- CFG OVERLAY -->
+<div class="overlay" id="overlay">
+  <div class="cfg-box">
+    <h2>CONFIGURATION</h2>
+
+    <label>City name (display only)</label>
+    <input type="text" id="cfg-city" placeholder="Paris">
+
+    <label>Latitude</label>
+    <input type="text" id="cfg-lat" placeholder="48.8566">
+
+    <label>Longitude</label>
+    <input type="text" id="cfg-lon" placeholder="2.3522">
+    <div class="cfg-hint">Find your coordinates on maps.google.com → right-click → "What's here?"</div>
+
+    <label>Temperature unit</label>
+    <select id="cfg-unit">
+      <option value="C">Celsius (°C)</option>
+      <option value="F">Fahrenheit (°F)</option>
+    </select>
+
+    <div class="cfg-row">
+      <button class="cfg-btn" onclick="hideCfg()">CANCEL</button>
+      <button class="cfg-btn save" onclick="saveCfg()">SAVE &amp; RELOAD</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ============================================================
+// CONFIG
+// ============================================================
+var CFG = {
+  city: 'Paris', lat: '48.8566', lon: '2.3522', unit: 'C', theme: 'green'
+};
+
+function loadCfg() {
+  try {
+    var r = localStorage.getItem('wx3000');
+    if (r) {
+      var s = JSON.parse(r);
+      if (s.city)  CFG.city  = s.city;
+      if (s.lat)   CFG.lat   = s.lat;
+      if (s.lon)   CFG.lon   = s.lon;
+      if (s.unit)  CFG.unit  = s.unit;
+      if (s.theme) CFG.theme = s.theme;
+    }
+  } catch(e) {}
+}
+
+function saveCfg() {
+  CFG.city  = document.getElementById('cfg-city').value || 'Paris';
+  CFG.lat   = document.getElementById('cfg-lat').value  || '48.8566';
+  CFG.lon   = document.getElementById('cfg-lon').value  || '2.3522';
+  CFG.unit  = document.getElementById('cfg-unit').value;
+  try { localStorage.setItem('wx3000', JSON.stringify(CFG)); } catch(e) {}
+  hideCfg();
+  loadWeather();
+}
+
+function showCfg() {
+  document.getElementById('cfg-city').value = CFG.city;
+  document.getElementById('cfg-lat').value  = CFG.lat;
+  document.getElementById('cfg-lon').value  = CFG.lon;
+  document.getElementById('cfg-unit').value = CFG.unit;
+  document.getElementById('overlay').style.display = 'block';
+}
+
+function hideCfg() { document.getElementById('overlay').style.display = 'none'; }
+
+// ============================================================
+// THEMES
+// ============================================================
+function setTheme(t) {
+  document.body.className = 'theme-' + t;
+  CFG.theme = t;
+  try { localStorage.setItem('wx3000', JSON.stringify(CFG)); } catch(e) {}
+  var ts = ['green','blue','bw','amber'];
+  for (var i = 0; i < ts.length; i++) {
+    var b = document.getElementById('btn-' + ts[i]);
+    if (b) b.className = 'btn' + (ts[i] === t ? ' active' : '');
+  }
+}
+
+// ============================================================
+// CLOCK
+// ============================================================
+var DAYS   = ['SUN','MON','TUE','WED','THU','FRI','SAT'];
+var MONTHS = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
+function pad(n) { return n < 10 ? '0' + n : '' + n; }
+
+function tick() {
+  var now = new Date();
+  document.getElementById('clock-t').innerHTML =
+    pad(now.getHours()) + ':' + pad(now.getMinutes()) + ':' + pad(now.getSeconds());
+  document.getElementById('clock-d').innerHTML =
+    DAYS[now.getDay()] + ' ' + pad(now.getDate()) + ' ' + MONTHS[now.getMonth()];
+}
+setInterval(tick, 1000);
+tick();
+
+// ============================================================
+// WEATHER CODES
+// ============================================================
+var WX = {
+  0:  { s: 'CLEAR',     icon: 'CLR'  },
+  1:  { s: 'CLEAR',     icon: 'CLR'  },
+  2:  { s: 'PART.CLOUDY',icon: 'PCL' },
+  3:  { s: 'OVERCAST',  icon: 'OVC'  },
+  45: { s: 'FOG',       icon: 'FOG'  },
+  48: { s: 'RIME FOG',  icon: 'FOG'  },
+  51: { s: 'DRIZZLE',   icon: 'DRZ'  },
+  53: { s: 'DRIZZLE',   icon: 'DRZ'  },
+  55: { s: 'HVY DRIZZLE',icon:'DRZ'  },
+  61: { s: 'RAIN',      icon: 'RN'   },
+  63: { s: 'RAIN',      icon: 'RN'   },
+  65: { s: 'HVY RAIN',  icon: 'RN'   },
+  71: { s: 'SNOW',      icon: 'SNW'  },
+  73: { s: 'SNOW',      icon: 'SNW'  },
+  75: { s: 'HVY SNOW',  icon: 'SNW'  },
+  77: { s: 'SNOW GRAINS',icon:'SNW'  },
+  80: { s: 'SHOWERS',   icon: 'SHW'  },
+  81: { s: 'SHOWERS',   icon: 'SHW'  },
+  82: { s: 'HVY SHOWERS',icon:'SHW'  },
+  85: { s: 'SNOW SHWR', icon: 'SNW'  },
+  86: { s: 'SNOW SHWR', icon: 'SNW'  },
+  95: { s: 'TSTORM',    icon: 'TST'  },
+  96: { s: 'TSTORM',    icon: 'TST'  },
+  99: { s: 'TSTORM',    icon: 'TST'  }
+};
+
+function wxInfo(code) {
+  return WX[code] || { s: 'UNKN', icon: '???' };
+}
+
+// ============================================================
+// UNIT HELPERS
+// ============================================================
+function fmtTemp(c) {
+  if (CFG.unit === 'F') return Math.round(c * 9 / 5 + 32) + '<span class="temp-unit">°F</span>';
+  return Math.round(c) + '<span class="temp-unit">°C</span>';
+}
+
+function fmtTempPlain(c) {
+  if (CFG.unit === 'F') return Math.round(c * 9 / 5 + 32);
+  return Math.round(c);
+}
+
+// ============================================================
+// UV COLOR
+// ============================================================
+function uvColor(uv) {
+  if (uv <= 2)  return '#2a6a2a';
+  if (uv <= 5)  return '#7a6a00';
+  if (uv <= 7)  return '#7a3a00';
+  if (uv <= 10) return '#7a0000';
+  return '#5a005a';
+}
+
+function uvLabel(uv) {
+  if (uv <= 2)  return 'LOW';
+  if (uv <= 5)  return 'MOD';
+  if (uv <= 7)  return 'HIGH';
+  if (uv <= 10) return 'VHIGH';
+  return 'EXTR';
+}
+
+// ============================================================
+// WIND DIRECTION
+// ============================================================
+function degToDir(deg) {
+  var dirs = ['N','NE','E','SE','S','SW','W','NW'];
+  return dirs[Math.round(deg / 45) % 8];
+}
+
+// ============================================================
+// XHR
+// ============================================================
+function xhrGet(url, ok, fail) {
+  var xhr = new XMLHttpRequest();
+  xhr.open('GET', url, true);
+  xhr.onreadystatechange = function() {
+    if (xhr.readyState !== 4) return;
+    if (xhr.status === 200) { ok(xhr.responseText); }
+    else if (fail) { fail(xhr.status); }
+  };
+  xhr.send(null);
+}
+
+// ============================================================
+// LOAD WEATHER
+// ============================================================
+function loadWeather() {
+  document.getElementById('status-txt').innerHTML = 'FETCHING...';
+
+  var url = '/api/weather?lat=' + CFG.lat + '&lon=' + CFG.lon;
+
+  xhrGet(url, function(raw) {
+    try {
+      var d = JSON.parse(raw);
+      renderWeather(d);
+      document.getElementById('status-txt').innerHTML = 'ONLINE';
+    } catch(e) {
+      setError('PARSE ERROR');
+    }
+  }, function() {
+    setError('OFFLINE');
+  });
+}
+
+function setError(msg) {
+  document.getElementById('status-txt').innerHTML = msg;
+}
+
+function renderWeather(d) {
+  var cur     = d.current_weather    || {};
+  var hourly  = d.hourly             || {};
+  var daily   = d.daily              || {};
+
+  var tempC   = cur.temperature      !== undefined ? cur.temperature  : null;
+  var windspd = cur.windspeed        !== undefined ? cur.windspeed    : null;
+  var winddir = cur.winddirection    !== undefined ? cur.winddirection: null;
+  var code    = cur.weathercode      !== undefined ? cur.weathercode  : -1;
+  var wx      = wxInfo(code);
+
+  // Try to find current hour in hourly data
+  var now     = new Date();
+  var thisHr  = now.getHours();
+  var humidity   = null;
+  var pressure   = null;
+  var visibility = null;
+  var cloudcover = null;
+  var uvIndex    = null;
+
+  if (hourly.time) {
+    for (var i = 0; i < hourly.time.length; i++) {
+      var t = new Date(hourly.time[i]);
+      if (t.getDate()  === now.getDate() && t.getHours() === thisHr) {
+        if (hourly.relativehumidity_2m)  humidity   = hourly.relativehumidity_2m[i];
+        if (hourly.surface_pressure)     pressure   = hourly.surface_pressure[i];
+        if (hourly.visibility)           visibility = hourly.visibility[i];
+        if (hourly.cloudcover)           cloudcover = hourly.cloudcover[i];
+        if (hourly.uv_index)             uvIndex    = hourly.uv_index[i];
+        break;
+      }
+    }
+  }
+
+  // Daily
+  var hiC   = (daily.temperature_2m_max && daily.temperature_2m_max[0] !== undefined) ? daily.temperature_2m_max[0] : null;
+  var loC   = (daily.temperature_2m_min && daily.temperature_2m_min[0] !== undefined) ? daily.temperature_2m_min[0] : null;
+  var rain0 = (daily.precipitation_sum  && daily.precipitation_sum[0]  !== undefined) ? daily.precipitation_sum[0]  : null;
+  var precip_prob = (daily.precipitation_probability_max && daily.precipitation_probability_max[0] !== undefined) ? daily.precipitation_probability_max[0] : null;
+  var sunrise = (daily.sunrise && daily.sunrise[0]) ? daily.sunrise[0] : null;
+  var sunset  = (daily.sunset  && daily.sunset[0])  ? daily.sunset[0]  : null;
+
+  // Apparent temp (approximation using humidity if available)
+  var feelsC = tempC;
+
+  // ---- RENDER CELLS ----
+
+  // TEMP
+  var hiLoStr = (hiC !== null && loC !== null)
+    ? '<div class="feels-like accent">HI ' + fmtTempPlain(hiC) + '  LO ' + fmtTempPlain(loC) + '</div>'
+    : '';
+  document.getElementById('cell-temp').innerHTML =
+    '<div class="cell-label dim">TEMPERATURE</div>' +
+    '<div class="big-temp bright">' + (tempC !== null ? fmtTemp(tempC) : '--') + '</div>' +
+    hiLoStr +
+    '<div class="feels-like dim" style="margin-top:3px;">' + CFG.city.toUpperCase() + '</div>';
+
+  // CONDITIONS
+  document.getElementById('cell-cond').innerHTML =
+    '<div class="cell-label dim">CONDITIONS</div>' +
+    '<div class="wx-icon-ascii accent">' + wx.icon + '</div>' +
+    '<div class="wx-symbol">' + wx.s + '</div>';
+
+  // HUMIDITY
+  var humHtml = '<div class="cell-label dim">HUMIDITY</div>';
+  if (humidity !== null) {
+    humHtml += '<div class="metric-val bright14">' + Math.round(humidity) + '<span class="metric-unit accent">%</span></div>';
+    humHtml += '<div class="bar-track"><div class="bar-fill" style="width:' + Math.min(humidity, 100) + '%"></div></div>';
+    humHtml += '<div class="feels-like dim" style="margin-top:4px;">' + (humidity < 30 ? 'DRY' : humidity < 60 ? 'COMFORTABLE' : humidity < 80 ? 'HUMID' : 'VERY HUMID') + '</div>';
+  } else {
+    humHtml += '<div class="ld">--</div>';
+  }
+  document.getElementById('cell-hum').innerHTML = humHtml;
+
+  // PRESSURE
+  var presHtml = '<div class="cell-label dim">PRESSURE</div>';
+  if (pressure !== null) {
+    var presRounded = Math.round(pressure);
+    presHtml += '<div class="metric-val bright14">' + presRounded + '<span class="metric-unit accent">hPa</span></div>';
+    presHtml += '<div class="feels-like dim" style="margin-top:4px;">' + (presRounded < 1000 ? 'LOW' : presRounded < 1013 ? 'NORMAL' : 'HIGH') + '</div>';
+  } else {
+    presHtml += '<div class="ld">--</div>';
+  }
+  document.getElementById('cell-pres').innerHTML = presHtml;
+
+  // WIND
+  var windHtml = '<div class="cell-label dim">WIND</div>';
+  if (windspd !== null) {
+    windHtml += '<div class="metric-val bright14">' + Math.round(windspd) + '<span class="metric-unit accent">km/h</span></div>';
+    if (winddir !== null) {
+      var dirLabel = degToDir(winddir);
+      windHtml += '<div class="feels-like accent" style="margin-top:3px;">' + dirLabel + ' &mdash; ' + Math.round(winddir) + '&deg;</div>';
+      windHtml +=
+        '<div class="wind-compass">' +
+          '<span class="compass-n dim">N</span>' +
+          '<span class="compass-s dim">S</span>' +
+          '<span class="compass-e dim">E</span>' +
+          '<span class="compass-w dim">W</span>' +
+          '<div class="compass-needle" style="-webkit-transform:rotate(' + winddir + 'deg);transform:rotate(' + winddir + 'deg);"></div>' +
+        '</div>';
+    }
+  } else {
+    windHtml += '<div class="ld">--</div>';
+  }
+  document.getElementById('cell-wind').innerHTML = windHtml;
+
+  // UV INDEX
+  var uvHtml = '<div class="cell-label dim">UV INDEX</div>';
+  if (uvIndex !== null) {
+    var uvVal = Math.round(uvIndex * 10) / 10;
+    uvHtml += '<div class="metric-val bright14">' + uvVal + '</div>';
+    uvHtml += '<div class="uv-badge" style="background:' + uvColor(uvVal) + ';margin-top:4px;font-size:11px;letter-spacing:1px;">' + uvLabel(uvVal) + '</div>';
+  } else {
+    uvHtml += '<div class="ld">--</div>';
+  }
+  document.getElementById('cell-uv').innerHTML = uvHtml;
+
+  // PRECIP
+  var rainHtml = '<div class="cell-label dim">PRECIP</div>';
+  if (rain0 !== null) {
+    rainHtml += '<div class="metric-val bright14">' + rain0.toFixed(1) + '<span class="metric-unit accent">mm</span></div>';
+    if (precip_prob !== null) {
+      rainHtml += '<div class="feels-like accent" style="margin-top:3px;">' + Math.round(precip_prob) + '% PROB</div>';
+      rainHtml += '<div class="bar-track"><div class="bar-fill" style="width:' + Math.min(precip_prob, 100) + '%"></div></div>';
+    }
+  } else {
+    rainHtml += '<div class="ld">--</div>';
+  }
+  document.getElementById('cell-rain').innerHTML = rainHtml;
+
+  // SUNRISE / SUNSET
+  var sunHtml = '<div class="cell-label dim">SUN</div>';
+  if (sunrise && sunset) {
+    var sr = new Date(sunrise);
+    var ss = new Date(sunset);
+    sunHtml += '<div class="feels-like accent" style="margin-bottom:4px;">RISE ' + pad(sr.getHours()) + ':' + pad(sr.getMinutes()) + '</div>';
+    sunHtml += '<div class="feels-like accent">SET&nbsp; ' + pad(ss.getHours()) + ':' + pad(ss.getMinutes()) + '</div>';
+    // Day length
+    var daylen = Math.round((ss - sr) / 3600000 * 10) / 10;
+    sunHtml += '<div class="feels-like dim" style="margin-top:4px;">' + daylen + 'H DAYLIGHT</div>';
+  } else {
+    sunHtml += '<div class="ld">--</div>';
+  }
+  document.getElementById('cell-sun').innerHTML = sunHtml;
+
+  // CLOUD COVER
+  var cloudHtml = '<div class="cell-label dim">CLOUD COVER</div>';
+  if (cloudcover !== null) {
+    cloudHtml += '<div class="metric-val bright14">' + Math.round(cloudcover) + '<span class="metric-unit accent">%</span></div>';
+    cloudHtml += '<div class="bar-track"><div class="bar-fill" style="width:' + Math.min(cloudcover, 100) + '%"></div></div>';
+    cloudHtml += '<div class="feels-like dim" style="margin-top:4px;">' + (cloudcover < 20 ? 'CLEAR SKY' : cloudcover < 50 ? 'SCATTERED' : cloudcover < 85 ? 'BROKEN' : 'OVERCAST') + '</div>';
+  } else {
+    cloudHtml += '<div class="ld">--</div>';
+  }
+  document.getElementById('cell-cloud').innerHTML = cloudHtml;
+
+  // LOCATION / COORDS
+  document.getElementById('cell-loc').innerHTML =
+    '<div class="cell-label dim">LOCATION</div>' +
+    '<div class="feels-like accent" style="margin-bottom:4px;">' + CFG.city.toUpperCase() + '</div>' +
+    '<div class="feels-like dim">LAT ' + parseFloat(CFG.lat).toFixed(2) + '</div>' +
+    '<div class="feels-like dim">LON ' + parseFloat(CFG.lon).toFixed(2) + '</div>';
+
+  // 7-DAY FORECAST
+  renderForecast(daily);
+}
+
+function renderForecast(daily) {
+  if (!daily || !daily.time || daily.time.length === 0) {
+    document.getElementById('forecast-row').innerHTML = '<div class="ld">NO FORECAST DATA</div>';
+    return;
+  }
+  var html = '';
+  var today = new Date();
+  today.setHours(0,0,0,0);
+
+  for (var i = 0; i < Math.min(daily.time.length, 7); i++) {
+    var dp = daily.time[i].split('-');
+    var dd = new Date(parseInt(dp[0],10), parseInt(dp[1],10)-1, parseInt(dp[2],10));
+    var diff = Math.round((dd - today) / 86400000);
+    var label = diff === 0 ? 'TODAY' : diff === 1 ? 'TMRW' : DAYS[dd.getDay()];
+
+    var hi   = (daily.temperature_2m_max && daily.temperature_2m_max[i] !== undefined) ? fmtTempPlain(daily.temperature_2m_max[i]) : '--';
+    var lo   = (daily.temperature_2m_min && daily.temperature_2m_min[i] !== undefined) ? fmtTempPlain(daily.temperature_2m_min[i]) : '--';
+    var rain = (daily.precipitation_sum  && daily.precipitation_sum[i]  !== undefined) ? daily.precipitation_sum[i].toFixed(1)     : '--';
+    var wc   = (daily.weathercode        && daily.weathercode[i]        !== undefined) ? daily.weathercode[i]                       : -1;
+    var wxi  = wxInfo(wc);
+
+    html +=
+      '<div class="fc-day">' +
+        '<div class="fc-name dim">' + label + '</div>' +
+        '<div class="fc-icon accent">' + wxi.icon + '</div>' +
+        '<div class="fc-hi">' + hi + '&deg;</div>' +
+        '<div class="fc-lo">' + lo + '&deg;</div>' +
+        '<div class="fc-rain dim">' + rain + 'mm</div>' +
+      '</div>';
+  }
+  document.getElementById('forecast-row').innerHTML = html;
+}
+
+// ============================================================
+// BOOT
+// ============================================================
+loadCfg();
+setTheme(CFG.theme);
+loadWeather();
+setInterval(loadWeather, 10 * 60 * 1000);
+</script>
+</body>
+</html>
