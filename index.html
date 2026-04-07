@@ -395,6 +395,55 @@ body.theme-amber .cfg-btn.save { background:#1a1000; }
 /* ===== FULLSCREEN ===== */
 #btn-fs { display: none; }
 
+body.is-fullscreen,
+body.is-standalone { height: 100%; overflow: hidden; }
+
+body.is-fullscreen .outer,
+body.is-standalone .outer {
+  height: 100%;
+  padding: 5px;
+  display: -webkit-box; display: -webkit-flex; display: flex;
+  -webkit-box-orient: vertical; -webkit-flex-direction: column; flex-direction: column;
+}
+
+body.is-fullscreen .shell,
+body.is-standalone .shell {
+  -webkit-box-flex: 1; -webkit-flex: 1; flex: 1;
+  min-height: 0;
+  display: -webkit-box; display: -webkit-flex; display: flex;
+  -webkit-box-orient: vertical; -webkit-flex-direction: column; flex-direction: column;
+}
+
+body.is-fullscreen .brand-strip,
+body.is-standalone .brand-strip { -webkit-flex-shrink: 0; flex-shrink: 0; }
+
+body.is-fullscreen .lcd,
+body.is-standalone .lcd {
+  -webkit-box-flex: 1; -webkit-flex: 1; flex: 1;
+  min-height: 0;
+  display: -webkit-box; display: -webkit-flex; display: flex;
+  -webkit-box-orient: vertical; -webkit-flex-direction: column; flex-direction: column;
+}
+
+/* Les 3 rangées de données s'étirent pour remplir l'espace */
+body.is-fullscreen .lcd > .row,
+body.is-standalone .lcd > .row {
+  -webkit-box-flex: 1; -webkit-flex: 1; flex: 1;
+  min-height: 0;
+  margin-bottom: 5px;
+  -webkit-box-align: stretch; -webkit-align-items: stretch; align-items: stretch;
+}
+
+/* Séparateur et prévisions : taille fixe */
+body.is-fullscreen .sep,
+body.is-standalone .sep { -webkit-flex-shrink: 0; flex-shrink: 0; margin: 4px 0; }
+
+body.is-fullscreen .forecast-section,
+body.is-standalone .forecast-section { -webkit-flex-shrink: 0; flex-shrink: 0; }
+
+body.is-fullscreen .bottom-bar,
+body.is-standalone .bottom-bar { -webkit-flex-shrink: 0; flex-shrink: 0; }
+
 /* ===== LOADING ===== */
 .ld { font-size: 10px; letter-spacing: 3px; opacity: 0.35;
   -webkit-animation: ldp 1.4s ease-in-out infinite; animation: ldp 1.4s ease-in-out infinite; }
@@ -504,9 +553,11 @@ body.theme-amber .cfg-btn.save { background:#1a1000; }
     <hr class="sep">
 
     <!-- 7-DAY FORECAST -->
-    <div class="cell-label dim" style="margin-bottom:8px;">PRÉVISIONS 7 JOURS</div>
-    <div class="forecast-row" id="forecast-row">
-      <div class="ld">CHARGEMENT PRÉVISIONS...</div>
+    <div class="forecast-section">
+      <div class="cell-label dim" style="margin-bottom:8px;">PRÉVISIONS 7 JOURS</div>
+      <div class="forecast-row" id="forecast-row">
+        <div class="ld">CHARGEMENT PRÉVISIONS...</div>
+      </div>
     </div>
 
   </div><!-- /lcd -->
@@ -578,6 +629,17 @@ body.theme-amber .cfg-btn.save { background:#1a1000; }
 </div>
 
 <script>
+// ============================================================
+// COMPAT — parsing de date ISO pour iOS 5 (new Date("2024-04-07T14:00") = Invalid Date)
+// ============================================================
+function parseISODate(str) {
+  // Format : "2024-04-07T14:00" ou "2024-04-07T06:23:00"
+  var dt = str.split('T');
+  var d  = dt[0].split('-');
+  var t  = dt[1] ? dt[1].split(':') : ['0','0'];
+  return new Date(+d[0], +d[1]-1, +d[2], +t[0], +t[1]);
+}
+
 // ============================================================
 // CONFIG
 // ============================================================
@@ -785,7 +847,7 @@ function renderWeather(d) {
 
   if (hourly.time) {
     for (var i = 0; i < hourly.time.length; i++) {
-      var t = new Date(hourly.time[i]);
+      var t = parseISODate(hourly.time[i]);
       if (t.getDate()  === now.getDate() && t.getHours() === thisHr) {
         if (hourly.relativehumidity_2m)  humidity   = hourly.relativehumidity_2m[i];
         if (hourly.surface_pressure)     pressure   = hourly.surface_pressure[i];
@@ -896,8 +958,8 @@ function renderWeather(d) {
   // SUNRISE / SUNSET
   var sunHtml = '<div class="cell-label dim">SOLEIL</div>';
   if (sunrise && sunset) {
-    var sr = new Date(sunrise);
-    var ss = new Date(sunset);
+    var sr = parseISODate(sunrise);
+    var ss = parseISODate(sunset);
     sunHtml += '<div class="feels-like accent" style="margin-bottom:4px;">LEVER ' + pad(sr.getHours()) + ':' + pad(sr.getMinutes()) + '</div>';
     sunHtml += '<div class="feels-like accent">COUCHANT ' + pad(ss.getHours()) + ':' + pad(ss.getMinutes()) + '</div>';
     // Day length
@@ -971,26 +1033,46 @@ var isIOS = /ipad|iphone|ipod/i.test(navigator.userAgent) ||
 var isStandalone = window.navigator.standalone === true ||
                    window.matchMedia('(display-mode: standalone)').matches;
 
+function addBodyClass(cls) {
+  if (document.body.className.indexOf(cls) === -1)
+    document.body.className += ' ' + cls;
+}
+function removeBodyClass(cls) {
+  document.body.className = document.body.className.replace(
+    new RegExp('\\s*\\b' + cls + '\\b', 'g'), '').trim();
+}
+
 function initFsButton() {
-  // Cache le bouton si déjà en standalone (plein écran)
   var btn = document.getElementById('btn-fs');
-  if (isStandalone) { btn.style.display = 'none'; return; }
+  if (isStandalone) {
+    // Déjà en mode standalone (PWA) : layout plein écran activé, bouton masqué
+    addBodyClass('is-standalone');
+    btn.style.display = 'none';
+    return;
+  }
   btn.style.display = 'inline-block';
 }
 
+// Mise à jour de la classe is-fullscreen lors des changements d'état
+function onFsChange() {
+  var inFs = !!(document.fullscreenElement || document.webkitFullscreenElement);
+  if (inFs) { addBodyClass('is-fullscreen'); }
+  else       { removeBodyClass('is-fullscreen'); }
+}
+document.addEventListener('fullscreenchange',       onFsChange);
+document.addEventListener('webkitfullscreenchange', onFsChange);
+
 function toggleFullscreen() {
   if (isIOS) {
-    // iOS ne supporte pas requestFullscreen — afficher les instructions
     document.getElementById('fs-overlay').style.display = 'block';
     return;
   }
-  // Autres navigateurs : API Fullscreen standard
   var el = document.documentElement;
   if (!document.fullscreenElement && !document.webkitFullscreenElement) {
-    if (el.requestFullscreen)       el.requestFullscreen();
+    if (el.requestFullscreen)            el.requestFullscreen();
     else if (el.webkitRequestFullscreen) el.webkitRequestFullscreen();
   } else {
-    if (document.exitFullscreen)       document.exitFullscreen();
+    if (document.exitFullscreen)            document.exitFullscreen();
     else if (document.webkitExitFullscreen) document.webkitExitFullscreen();
   }
 }
