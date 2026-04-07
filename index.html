@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black">
-<title>WEATHER STATION</title>
+<title>STATION MÉTÉO</title>
 <link href="https://fonts.googleapis.com/css2?family=DSEG7+Classic:wght@400;700&family=DSEG14+Classic:wght@400&family=Share+Tech+Mono&display=swap" rel="stylesheet">
 <style>
 * { margin: 0; padding: 0; -webkit-box-sizing: border-box; box-sizing: border-box; }
@@ -390,7 +390,7 @@ body.theme-amber .cfg-btn.save { background:#1a1000; }
 
   <div class="brand-strip">
     <span>WX-3000</span>
-    <span>PERSONAL WEATHER STATION</span>
+    <span>STATION MÉTÉO PERSONNELLE</span>
     <span>PRO</span>
   </div>
 
@@ -401,13 +401,13 @@ body.theme-amber .cfg-btn.save { background:#1a1000; }
 
       <!-- BIG TEMP -->
       <div class="cell col-2" id="cell-temp">
-        <div class="cell-label dim">TEMPERATURE</div>
-        <div class="ld">LOADING...</div>
+        <div class="cell-label dim">TEMPÉRATURE</div>
+        <div class="ld">CHARGEMENT...</div>
       </div>
 
       <!-- CLOCK -->
       <div class="cell col-1">
-        <div class="cell-label dim">TIME</div>
+        <div class="cell-label dim">HEURE</div>
         <div class="clock-time bright" id="clock-t">--:--:--</div>
         <div class="clock-date accent" id="clock-d">---</div>
       </div>
@@ -425,25 +425,25 @@ body.theme-amber .cfg-btn.save { background:#1a1000; }
 
       <!-- HUMIDITY -->
       <div class="cell col-1" id="cell-hum">
-        <div class="cell-label dim">HUMIDITY</div>
+        <div class="cell-label dim">HUMIDITÉ</div>
         <div class="ld">--</div>
       </div>
 
       <!-- PRESSURE -->
       <div class="cell col-1" id="cell-pres">
-        <div class="cell-label dim">PRESSURE</div>
+        <div class="cell-label dim">PRESSION</div>
         <div class="ld">--</div>
       </div>
 
       <!-- WIND -->
       <div class="cell col-1" id="cell-wind">
-        <div class="cell-label dim">WIND</div>
+        <div class="cell-label dim">VENT</div>
         <div class="ld">--</div>
       </div>
 
       <!-- UV -->
       <div class="cell col-1" id="cell-uv">
-        <div class="cell-label dim">UV INDEX</div>
+        <div class="cell-label dim">INDICE UV</div>
         <div class="ld">--</div>
       </div>
 
@@ -453,22 +453,22 @@ body.theme-amber .cfg-btn.save { background:#1a1000; }
     <div class="row">
 
       <div class="cell col-1" id="cell-rain">
-        <div class="cell-label dim">PRECIP</div>
+        <div class="cell-label dim">PRÉCIP</div>
         <div class="ld">--</div>
       </div>
 
       <div class="cell col-1" id="cell-sun">
-        <div class="cell-label dim">SUN</div>
+        <div class="cell-label dim">SOLEIL</div>
         <div class="ld">--</div>
       </div>
 
       <div class="cell col-1" id="cell-cloud">
-        <div class="cell-label dim">CLOUD COVER</div>
+        <div class="cell-label dim">NÉBULOSITÉ</div>
         <div class="ld">--</div>
       </div>
 
       <div class="cell col-1" id="cell-loc">
-        <div class="cell-label dim">LOCATION</div>
+        <div class="cell-label dim">LOCALISATION</div>
         <div class="ld">--</div>
       </div>
 
@@ -477,9 +477,9 @@ body.theme-amber .cfg-btn.save { background:#1a1000; }
     <hr class="sep">
 
     <!-- 7-DAY FORECAST -->
-    <div class="cell-label dim" style="margin-bottom:8px;">7-DAY FORECAST</div>
+    <div class="cell-label dim" style="margin-bottom:8px;">PRÉVISIONS 7 JOURS</div>
     <div class="forecast-row" id="forecast-row">
-      <div class="ld">LOADING FORECAST...</div>
+      <div class="ld">CHARGEMENT PRÉVISIONS...</div>
     </div>
 
   </div><!-- /lcd -->
@@ -492,11 +492,11 @@ body.theme-amber .cfg-btn.save { background:#1a1000; }
       <button class="btn" id="btn-bw"    onclick="setTheme('bw')">B&amp;W</button>
       <button class="btn" id="btn-amber" onclick="setTheme('amber')">AMB</button>
       <button class="btn" onclick="showCfg()">CFG</button>
-      <button class="btn" onclick="loadWeather()" style="opacity:0.5;">REFRESH</button>
+      <button class="btn" onclick="loadWeather()" style="opacity:0.5;">ACTUALISER</button>
     </div>
     <div class="status-row">
       <span class="blink-dot"></span>
-      <span id="status-txt">ONLINE</span>
+      <span id="status-txt">EN LIGNE</span>
     </div>
   </div>
 
@@ -508,7 +508,7 @@ body.theme-amber .cfg-btn.save { background:#1a1000; }
   <div class="cfg-box">
     <h2>CONFIGURATION</h2>
 
-    <label>City name (display only)</label>
+    <label>Nom de ville (affichage)</label>
     <input type="text" id="cfg-city" placeholder="Paris">
 
     <label>Latitude</label>
@@ -516,17 +516,17 @@ body.theme-amber .cfg-btn.save { background:#1a1000; }
 
     <label>Longitude</label>
     <input type="text" id="cfg-lon" placeholder="2.3522">
-    <div class="cfg-hint">Find your coordinates on maps.google.com → right-click → "What's here?"</div>
+    <div class="cfg-hint">Trouvez vos coordonnées sur maps.google.com → clic droit → "C'est quoi ici ?"</div>
 
-    <label>Temperature unit</label>
+    <label>Unité de température</label>
     <select id="cfg-unit">
       <option value="C">Celsius (°C)</option>
       <option value="F">Fahrenheit (°F)</option>
     </select>
 
     <div class="cfg-row">
-      <button class="cfg-btn" onclick="hideCfg()">CANCEL</button>
-      <button class="cfg-btn save" onclick="saveCfg()">SAVE &amp; RELOAD</button>
+      <button class="cfg-btn" onclick="hideCfg()">ANNULER</button>
+      <button class="cfg-btn save" onclick="saveCfg()">SAUVER &amp; RECHARGER</button>
     </div>
   </div>
 </div>
@@ -590,8 +590,8 @@ function setTheme(t) {
 // ============================================================
 // CLOCK
 // ============================================================
-var DAYS   = ['SUN','MON','TUE','WED','THU','FRI','SAT'];
-var MONTHS = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
+var DAYS   = ['DIM','LUN','MAR','MER','JEU','VEN','SAM'];
+var MONTHS = ['JAN','FÉV','MAR','AVR','MAI','JUN','JUL','AOÛ','SEP','OCT','NOV','DÉC'];
 function pad(n) { return n < 10 ? '0' + n : '' + n; }
 
 function tick() {
@@ -608,34 +608,34 @@ tick();
 // WEATHER CODES
 // ============================================================
 var WX = {
-  0:  { s: 'CLEAR',     icon: 'CLR'  },
-  1:  { s: 'CLEAR',     icon: 'CLR'  },
-  2:  { s: 'PART.CLOUDY',icon: 'PCL' },
-  3:  { s: 'OVERCAST',  icon: 'OVC'  },
-  45: { s: 'FOG',       icon: 'FOG'  },
-  48: { s: 'RIME FOG',  icon: 'FOG'  },
-  51: { s: 'DRIZZLE',   icon: 'DRZ'  },
-  53: { s: 'DRIZZLE',   icon: 'DRZ'  },
-  55: { s: 'HVY DRIZZLE',icon:'DRZ'  },
-  61: { s: 'RAIN',      icon: 'RN'   },
-  63: { s: 'RAIN',      icon: 'RN'   },
-  65: { s: 'HVY RAIN',  icon: 'RN'   },
-  71: { s: 'SNOW',      icon: 'SNW'  },
-  73: { s: 'SNOW',      icon: 'SNW'  },
-  75: { s: 'HVY SNOW',  icon: 'SNW'  },
-  77: { s: 'SNOW GRAINS',icon:'SNW'  },
-  80: { s: 'SHOWERS',   icon: 'SHW'  },
-  81: { s: 'SHOWERS',   icon: 'SHW'  },
-  82: { s: 'HVY SHOWERS',icon:'SHW'  },
-  85: { s: 'SNOW SHWR', icon: 'SNW'  },
-  86: { s: 'SNOW SHWR', icon: 'SNW'  },
-  95: { s: 'TSTORM',    icon: 'TST'  },
-  96: { s: 'TSTORM',    icon: 'TST'  },
-  99: { s: 'TSTORM',    icon: 'TST'  }
+  0:  { s: 'DÉGAGÉ',      icon: 'CLR'  },
+  1:  { s: 'DÉGAGÉ',      icon: 'CLR'  },
+  2:  { s: 'PART.NUAGEUX', icon: 'PCL' },
+  3:  { s: 'COUVERT',      icon: 'OVC'  },
+  45: { s: 'BROUILLARD',   icon: 'FOG'  },
+  48: { s: 'BRUILL.GIVR',  icon: 'FOG'  },
+  51: { s: 'BRUINE',       icon: 'DRZ'  },
+  53: { s: 'BRUINE',       icon: 'DRZ'  },
+  55: { s: 'BRUINE FORTE', icon: 'DRZ'  },
+  61: { s: 'PLUIE',        icon: 'RN'   },
+  63: { s: 'PLUIE',        icon: 'RN'   },
+  65: { s: 'PLUIE FORTE',  icon: 'RN'   },
+  71: { s: 'NEIGE',        icon: 'SNW'  },
+  73: { s: 'NEIGE',        icon: 'SNW'  },
+  75: { s: 'NEIGE FORTE',  icon: 'SNW'  },
+  77: { s: 'GRAINS NEIGE', icon: 'SNW'  },
+  80: { s: 'AVERSES',      icon: 'SHW'  },
+  81: { s: 'AVERSES',      icon: 'SHW'  },
+  82: { s: 'AVERSES FORT', icon: 'SHW'  },
+  85: { s: 'AVERSE NEIGE', icon: 'SNW'  },
+  86: { s: 'AVERSE NEIGE', icon: 'SNW'  },
+  95: { s: 'ORAGE',        icon: 'TST'  },
+  96: { s: 'ORAGE',        icon: 'TST'  },
+  99: { s: 'ORAGE',        icon: 'TST'  }
 };
 
 function wxInfo(code) {
-  return WX[code] || { s: 'UNKN', icon: '???' };
+  return WX[code] || { s: 'INCONNU', icon: '???' };
 }
 
 // ============================================================
@@ -663,10 +663,10 @@ function uvColor(uv) {
 }
 
 function uvLabel(uv) {
-  if (uv <= 2)  return 'LOW';
+  if (uv <= 2)  return 'FAIBLE';
   if (uv <= 5)  return 'MOD';
-  if (uv <= 7)  return 'HIGH';
-  if (uv <= 10) return 'VHIGH';
+  if (uv <= 7)  return 'ÉLEVÉ';
+  if (uv <= 10) return 'T.ÉLEVÉ';
   return 'EXTR';
 }
 
@@ -696,7 +696,7 @@ function xhrGet(url, ok, fail) {
 // LOAD WEATHER
 // ============================================================
 function loadWeather() {
-  document.getElementById('status-txt').innerHTML = 'FETCHING...';
+  document.getElementById('status-txt').innerHTML = 'CHARGEMENT...';
 
   var url = '/api/weather?lat=' + CFG.lat + '&lon=' + CFG.lon;
 
@@ -704,12 +704,12 @@ function loadWeather() {
     try {
       var d = JSON.parse(raw);
       renderWeather(d);
-      document.getElementById('status-txt').innerHTML = 'ONLINE';
+      document.getElementById('status-txt').innerHTML = 'EN LIGNE';
     } catch(e) {
-      setError('PARSE ERROR');
+      setError('ERREUR DONNÉES');
     }
   }, function() {
-    setError('OFFLINE');
+    setError('HORS LIGNE');
   });
 }
 
@@ -766,10 +766,10 @@ function renderWeather(d) {
 
   // TEMP
   var hiLoStr = (hiC !== null && loC !== null)
-    ? '<div class="feels-like accent">HI ' + fmtTempPlain(hiC) + '  LO ' + fmtTempPlain(loC) + '</div>'
+    ? '<div class="feels-like accent">MAX ' + fmtTempPlain(hiC) + '  MIN ' + fmtTempPlain(loC) + '</div>'
     : '';
   document.getElementById('cell-temp').innerHTML =
-    '<div class="cell-label dim">TEMPERATURE</div>' +
+    '<div class="cell-label dim">TEMPÉRATURE</div>' +
     '<div class="big-temp bright">' + (tempC !== null ? fmtTemp(tempC) : '--') + '</div>' +
     hiLoStr +
     '<div class="feels-like dim" style="margin-top:3px;">' + CFG.city.toUpperCase() + '</div>';
@@ -781,29 +781,29 @@ function renderWeather(d) {
     '<div class="wx-symbol">' + wx.s + '</div>';
 
   // HUMIDITY
-  var humHtml = '<div class="cell-label dim">HUMIDITY</div>';
+  var humHtml = '<div class="cell-label dim">HUMIDITÉ</div>';
   if (humidity !== null) {
     humHtml += '<div class="metric-val bright14">' + Math.round(humidity) + '<span class="metric-unit accent">%</span></div>';
     humHtml += '<div class="bar-track"><div class="bar-fill" style="width:' + Math.min(humidity, 100) + '%"></div></div>';
-    humHtml += '<div class="feels-like dim" style="margin-top:4px;">' + (humidity < 30 ? 'DRY' : humidity < 60 ? 'COMFORTABLE' : humidity < 80 ? 'HUMID' : 'VERY HUMID') + '</div>';
+    humHtml += '<div class="feels-like dim" style="margin-top:4px;">' + (humidity < 30 ? 'SEC' : humidity < 60 ? 'CONFORTABLE' : humidity < 80 ? 'HUMIDE' : 'TRÈS HUMIDE') + '</div>';
   } else {
     humHtml += '<div class="ld">--</div>';
   }
   document.getElementById('cell-hum').innerHTML = humHtml;
 
   // PRESSURE
-  var presHtml = '<div class="cell-label dim">PRESSURE</div>';
+  var presHtml = '<div class="cell-label dim">PRESSION</div>';
   if (pressure !== null) {
     var presRounded = Math.round(pressure);
     presHtml += '<div class="metric-val bright14">' + presRounded + '<span class="metric-unit accent">hPa</span></div>';
-    presHtml += '<div class="feels-like dim" style="margin-top:4px;">' + (presRounded < 1000 ? 'LOW' : presRounded < 1013 ? 'NORMAL' : 'HIGH') + '</div>';
+    presHtml += '<div class="feels-like dim" style="margin-top:4px;">' + (presRounded < 1000 ? 'BAS' : presRounded < 1013 ? 'NORMAL' : 'ÉLEVÉ') + '</div>';
   } else {
     presHtml += '<div class="ld">--</div>';
   }
   document.getElementById('cell-pres').innerHTML = presHtml;
 
   // WIND
-  var windHtml = '<div class="cell-label dim">WIND</div>';
+  var windHtml = '<div class="cell-label dim">VENT</div>';
   if (windspd !== null) {
     windHtml += '<div class="metric-val bright14">' + Math.round(windspd) + '<span class="metric-unit accent">km/h</span></div>';
     if (winddir !== null) {
@@ -824,7 +824,7 @@ function renderWeather(d) {
   document.getElementById('cell-wind').innerHTML = windHtml;
 
   // UV INDEX
-  var uvHtml = '<div class="cell-label dim">UV INDEX</div>';
+  var uvHtml = '<div class="cell-label dim">INDICE UV</div>';
   if (uvIndex !== null) {
     var uvVal = Math.round(uvIndex * 10) / 10;
     uvHtml += '<div class="metric-val bright14">' + uvVal + '</div>';
@@ -835,11 +835,11 @@ function renderWeather(d) {
   document.getElementById('cell-uv').innerHTML = uvHtml;
 
   // PRECIP
-  var rainHtml = '<div class="cell-label dim">PRECIP</div>';
+  var rainHtml = '<div class="cell-label dim">PRÉCIP</div>';
   if (rain0 !== null) {
     rainHtml += '<div class="metric-val bright14">' + rain0.toFixed(1) + '<span class="metric-unit accent">mm</span></div>';
     if (precip_prob !== null) {
-      rainHtml += '<div class="feels-like accent" style="margin-top:3px;">' + Math.round(precip_prob) + '% PROB</div>';
+      rainHtml += '<div class="feels-like accent" style="margin-top:3px;">' + Math.round(precip_prob) + '% PROBA</div>';
       rainHtml += '<div class="bar-track"><div class="bar-fill" style="width:' + Math.min(precip_prob, 100) + '%"></div></div>';
     }
   } else {
@@ -848,26 +848,26 @@ function renderWeather(d) {
   document.getElementById('cell-rain').innerHTML = rainHtml;
 
   // SUNRISE / SUNSET
-  var sunHtml = '<div class="cell-label dim">SUN</div>';
+  var sunHtml = '<div class="cell-label dim">SOLEIL</div>';
   if (sunrise && sunset) {
     var sr = new Date(sunrise);
     var ss = new Date(sunset);
-    sunHtml += '<div class="feels-like accent" style="margin-bottom:4px;">RISE ' + pad(sr.getHours()) + ':' + pad(sr.getMinutes()) + '</div>';
-    sunHtml += '<div class="feels-like accent">SET&nbsp; ' + pad(ss.getHours()) + ':' + pad(ss.getMinutes()) + '</div>';
+    sunHtml += '<div class="feels-like accent" style="margin-bottom:4px;">LEVER ' + pad(sr.getHours()) + ':' + pad(sr.getMinutes()) + '</div>';
+    sunHtml += '<div class="feels-like accent">COUCHANT ' + pad(ss.getHours()) + ':' + pad(ss.getMinutes()) + '</div>';
     // Day length
     var daylen = Math.round((ss - sr) / 3600000 * 10) / 10;
-    sunHtml += '<div class="feels-like dim" style="margin-top:4px;">' + daylen + 'H DAYLIGHT</div>';
+    sunHtml += '<div class="feels-like dim" style="margin-top:4px;">' + daylen + 'H DE JOUR</div>';
   } else {
     sunHtml += '<div class="ld">--</div>';
   }
   document.getElementById('cell-sun').innerHTML = sunHtml;
 
   // CLOUD COVER
-  var cloudHtml = '<div class="cell-label dim">CLOUD COVER</div>';
+  var cloudHtml = '<div class="cell-label dim">NÉBULOSITÉ</div>';
   if (cloudcover !== null) {
     cloudHtml += '<div class="metric-val bright14">' + Math.round(cloudcover) + '<span class="metric-unit accent">%</span></div>';
     cloudHtml += '<div class="bar-track"><div class="bar-fill" style="width:' + Math.min(cloudcover, 100) + '%"></div></div>';
-    cloudHtml += '<div class="feels-like dim" style="margin-top:4px;">' + (cloudcover < 20 ? 'CLEAR SKY' : cloudcover < 50 ? 'SCATTERED' : cloudcover < 85 ? 'BROKEN' : 'OVERCAST') + '</div>';
+    cloudHtml += '<div class="feels-like dim" style="margin-top:4px;">' + (cloudcover < 20 ? 'CIEL DÉGAGÉ' : cloudcover < 50 ? 'FRAGMENTÉ' : cloudcover < 85 ? 'NUAGEUX' : 'COUVERT') + '</div>';
   } else {
     cloudHtml += '<div class="ld">--</div>';
   }
@@ -875,7 +875,7 @@ function renderWeather(d) {
 
   // LOCATION / COORDS
   document.getElementById('cell-loc').innerHTML =
-    '<div class="cell-label dim">LOCATION</div>' +
+    '<div class="cell-label dim">LOCALISATION</div>' +
     '<div class="feels-like accent" style="margin-bottom:4px;">' + CFG.city.toUpperCase() + '</div>' +
     '<div class="feels-like dim">LAT ' + parseFloat(CFG.lat).toFixed(2) + '</div>' +
     '<div class="feels-like dim">LON ' + parseFloat(CFG.lon).toFixed(2) + '</div>';
@@ -886,7 +886,7 @@ function renderWeather(d) {
 
 function renderForecast(daily) {
   if (!daily || !daily.time || daily.time.length === 0) {
-    document.getElementById('forecast-row').innerHTML = '<div class="ld">NO FORECAST DATA</div>';
+    document.getElementById('forecast-row').innerHTML = '<div class="ld">PAS DE DONNÉES</div>';
     return;
   }
   var html = '';
@@ -897,7 +897,7 @@ function renderForecast(daily) {
     var dp = daily.time[i].split('-');
     var dd = new Date(parseInt(dp[0],10), parseInt(dp[1],10)-1, parseInt(dp[2],10));
     var diff = Math.round((dd - today) / 86400000);
-    var label = diff === 0 ? 'TODAY' : diff === 1 ? 'TMRW' : DAYS[dd.getDay()];
+    var label = diff === 0 ? 'AUJ' : diff === 1 ? 'DEMAIN' : DAYS[dd.getDay()];
 
     var hi   = (daily.temperature_2m_max && daily.temperature_2m_max[i] !== undefined) ? fmtTempPlain(daily.temperature_2m_max[i]) : '--';
     var lo   = (daily.temperature_2m_min && daily.temperature_2m_min[i] !== undefined) ? fmtTempPlain(daily.temperature_2m_min[i]) : '--';
