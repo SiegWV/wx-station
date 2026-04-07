@@ -392,6 +392,9 @@ body.theme-blue  .cfg-btn.save { background:#0a1e36; }
 body.theme-bw    .cfg-btn.save { background:#1e1e1e; }
 body.theme-amber .cfg-btn.save { background:#1a1000; }
 
+/* ===== FULLSCREEN ===== */
+#btn-fs { display: none; }
+
 /* ===== LOADING ===== */
 .ld { font-size: 10px; letter-spacing: 3px; opacity: 0.35;
   -webkit-animation: ldp 1.4s ease-in-out infinite; animation: ldp 1.4s ease-in-out infinite; }
@@ -517,6 +520,7 @@ body.theme-amber .cfg-btn.save { background:#1a1000; }
       <button class="btn" id="btn-amber"  onclick="setTheme('amber')">AMB</button>
       <button class="btn" id="btn-aurore" onclick="setTheme('aurore')">AUR</button>
       <button class="btn" onclick="showCfg()">CFG</button>
+      <button class="btn" id="btn-fs" onclick="toggleFullscreen()">FS</button>
       <button class="btn" onclick="loadWeather()" style="opacity:0.5;">ACTUALISER</button>
     </div>
     <div class="status-row">
@@ -527,6 +531,23 @@ body.theme-amber .cfg-btn.save { background:#1a1000; }
 
 </div><!-- /shell -->
 </div><!-- /outer -->
+
+<!-- FS OVERLAY (iOS instructions) -->
+<div class="overlay" id="fs-overlay" onclick="hideFsOverlay()">
+  <div class="cfg-box" style="text-align:center;" onclick="event.stopPropagation()">
+    <h2>PLEIN ÉCRAN — IPAD / IOS</h2>
+    <div style="font-size:38px;margin:16px 0;">□↑</div>
+    <p style="font-size:11px;letter-spacing:1px;line-height:2;opacity:0.85;">
+      1. Appuyez sur <strong>Partager</strong> (icône □↑ en bas ou en haut)<br>
+      2. Puis <strong>« Sur l'écran d'accueil »</strong><br>
+      3. Ouvrez l'icône depuis votre écran d'accueil<br>
+      → L'app s'affiche sans barre de navigation
+    </p>
+    <div class="cfg-row" style="margin-top:20px;">
+      <button class="cfg-btn save" onclick="hideFsOverlay()">FERMER</button>
+    </div>
+  </div>
+</div>
 
 <!-- CFG OVERLAY -->
 <div class="overlay" id="overlay">
@@ -943,10 +964,47 @@ function renderForecast(daily) {
 }
 
 // ============================================================
+// FULLSCREEN
+// ============================================================
+var isIOS = /ipad|iphone|ipod/i.test(navigator.userAgent) ||
+            (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+var isStandalone = window.navigator.standalone === true ||
+                   window.matchMedia('(display-mode: standalone)').matches;
+
+function initFsButton() {
+  // Cache le bouton si déjà en standalone (plein écran)
+  var btn = document.getElementById('btn-fs');
+  if (isStandalone) { btn.style.display = 'none'; return; }
+  btn.style.display = 'inline-block';
+}
+
+function toggleFullscreen() {
+  if (isIOS) {
+    // iOS ne supporte pas requestFullscreen — afficher les instructions
+    document.getElementById('fs-overlay').style.display = 'block';
+    return;
+  }
+  // Autres navigateurs : API Fullscreen standard
+  var el = document.documentElement;
+  if (!document.fullscreenElement && !document.webkitFullscreenElement) {
+    if (el.requestFullscreen)       el.requestFullscreen();
+    else if (el.webkitRequestFullscreen) el.webkitRequestFullscreen();
+  } else {
+    if (document.exitFullscreen)       document.exitFullscreen();
+    else if (document.webkitExitFullscreen) document.webkitExitFullscreen();
+  }
+}
+
+function hideFsOverlay() {
+  document.getElementById('fs-overlay').style.display = 'none';
+}
+
+// ============================================================
 // BOOT
 // ============================================================
 loadCfg();
 setTheme(CFG.theme);
+initFsButton();
 loadWeather();
 setInterval(loadWeather, 10 * 60 * 1000);
 </script>
