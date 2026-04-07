@@ -90,6 +90,30 @@ body.theme-bw    .fc-lo { color: #777; }
 body.theme-amber .fc-hi { color: #ffdd33; }
 body.theme-amber .fc-lo { color: #886600; }
 
+/* ===== THEME AURORE (multicolore) ===== */
+body.theme-aurore { background: #080a14; color: #d0c8ff; }
+body.theme-aurore .lcd    { background: #05070f; border: 2px solid #1e1a40; -webkit-box-shadow: inset 0 0 30px #000, 0 0 20px #120e2a; box-shadow: inset 0 0 30px #000, 0 0 20px #120e2a; }
+body.theme-aurore .shell  { background: #0e1022; border: 3px solid #2a2660; }
+body.theme-aurore .accent { color: #ff7b7b; }
+body.theme-aurore .dim    { color: #3a386a; }
+body.theme-aurore .bright  { color: #ffe600; font-family: 'DSEG7 Classic', monospace; }
+body.theme-aurore .bright14 { color: #00f0d0; font-family: 'DSEG14 Classic', monospace; }
+body.theme-aurore .sep    { border-color: #1a1840; }
+body.theme-aurore .cell   { border: 1px solid #1a1840; background: #06080f; }
+body.theme-aurore .bar-track { background: #06080f; border: 1px solid #1a1840; }
+body.theme-aurore .bar-fill  { background: #8b5cf6; }
+body.theme-aurore .btn    { border: 1px solid #2a2660; color: #6060aa; background: #06080e; }
+body.theme-aurore .btn:hover, body.theme-aurore .btn.active { background: #12102a; color: #d0c8ff; }
+body.theme-aurore .fc-hi  { color: #ffe600; }
+body.theme-aurore .fc-lo  { color: #007a6a; }
+body.theme-aurore .wind-compass  { border: 1px solid #1a1840; background: #06080f; }
+body.theme-aurore .compass-needle { background: #ff7b7b; }
+body.theme-aurore .blink-dot { background: #d0c8ff; }
+body.theme-aurore .cfg-box { background: #05070f; border: 2px solid #2a2660; color: #d0c8ff; }
+body.theme-aurore .cfg-box input, body.theme-aurore .cfg-box select { border: 1px solid #2a2660; color: #d0c8ff; }
+body.theme-aurore .cfg-btn { border: 1px solid #2a2660; color: #d0c8ff; background: #05070f; }
+body.theme-aurore .cfg-btn.save { background: #101028; }
+
 /* ===== LAYOUT ===== */
 .outer { max-width: 800px; margin: 0 auto; padding: 12px; }
 
@@ -487,10 +511,11 @@ body.theme-amber .cfg-btn.save { background:#1a1000; }
   <!-- BOTTOM BAR -->
   <div class="bottom-bar">
     <div class="theme-btns">
-      <button class="btn active" id="btn-green" onclick="setTheme('green')">GRN</button>
-      <button class="btn" id="btn-blue"  onclick="setTheme('blue')">BLU</button>
-      <button class="btn" id="btn-bw"    onclick="setTheme('bw')">B&amp;W</button>
-      <button class="btn" id="btn-amber" onclick="setTheme('amber')">AMB</button>
+      <button class="btn active" id="btn-green"  onclick="setTheme('green')">GRN</button>
+      <button class="btn" id="btn-blue"   onclick="setTheme('blue')">BLU</button>
+      <button class="btn" id="btn-bw"     onclick="setTheme('bw')">B&amp;W</button>
+      <button class="btn" id="btn-amber"  onclick="setTheme('amber')">AMB</button>
+      <button class="btn" id="btn-aurore" onclick="setTheme('aurore')">AUR</button>
       <button class="btn" onclick="showCfg()">CFG</button>
       <button class="btn" onclick="loadWeather()" style="opacity:0.5;">ACTUALISER</button>
     </div>
@@ -580,7 +605,7 @@ function setTheme(t) {
   document.body.className = 'theme-' + t;
   CFG.theme = t;
   try { localStorage.setItem('wx3000', JSON.stringify(CFG)); } catch(e) {}
-  var ts = ['green','blue','bw','amber'];
+  var ts = ['green','blue','bw','amber','aurore'];
   for (var i = 0; i < ts.length; i++) {
     var b = document.getElementById('btn-' + ts[i]);
     if (b) b.className = 'btn' + (ts[i] === t ? ' active' : '');
